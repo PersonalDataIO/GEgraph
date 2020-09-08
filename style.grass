@@ -1,0 +1,141 @@
+﻿node {
+  diameter: 50px;
+  color: #A5ABB6;
+  border-color: #9AA1AC;
+  border-width: 2px;
+  text-color-internal: #FFFFFF;
+  font-size: 10px;
+}
+relationship {
+  color: #A5ABB6;
+  shaft-width: 1px;
+  font-size: 8px;
+  padding: 3px;
+  text-color-external: #000000;
+  text-color-internal: #FFFFFF;
+  caption: "<type>";
+}
+node.INFECTED {
+  defaultCaption: "{day_index}";
+  diameter: 30px;
+  color: #D9C8AE;
+  border-color: #FF2728;
+  text-color-internal: #000000;
+  caption: "{day_index}";
+}
+node.* {
+  color: #C990C0;
+  border-color: #b261a5;
+  text-color-internal: #FFFFFF;
+}
+node.Node {
+  defaultCaption: "<id>";
+  caption: "{name}";
+}
+node.Relationship {
+  caption: "{name}";
+}
+node.REGION {
+  caption: "{type}";
+}
+node.RESIDENCE {
+  caption: "<id>";
+}
+node.QUARANTINE {
+  caption: "{debut}";
+}
+node.CONTEXT {
+  caption: "{day_index}";
+  color: #57C7E3;
+  border-color: #FFFFFF;
+  text-color-internal: #2A2C34;
+  diameter: 30px;
+}
+node.CONTEXT_RESIDENCE {
+  defaultCaption: "<id>";
+  color: #4C8EDA;
+  border-color: #2870c2;
+  text-color-internal: #000000;
+  caption: "{day_index}";
+  diameter: 10px;
+}
+node.CONTEXT_SOCIAL {
+  defaultCaption: "<id>";
+  color: #FFC4FF;
+  border-color: #447666;
+  text-color-internal: #000000;
+  caption: "{day_index}";
+  diameter: 30px;
+}
+node.CONTEXT_FUN {
+  defaultCaption: "<id>";
+  color: #C990C0;
+  border-color: #b261a5;
+  text-color-internal: #000000;
+  caption: "{day_index}";
+  diameter: 30px;
+}
+node.CONTEXT_PRO {
+  defaultCaption: "<id>";
+  color: #569480;
+  border-color: #23b3d7;
+  text-color-internal: #2A2C34;
+  caption: "{day_index}";
+  diameter: 30px;
+}
+node.CONTEXT_INTIMATE {
+  defaultCaption: "<id>";
+  color: #F16667;
+  border-color: #d7a013;
+  text-color-internal: #2A2C34;
+  caption: "{day_index}";
+  diameter: 30px;
+}
+node.CONTEXT_SCHOOL {
+  defaultCaption: "<id>";
+  color: #33C433;
+  border-color: #d7a013;
+  text-color-internal: #2A2C34;
+  caption: "{day_index}";
+  diameter: 30px;
+}
+node.CONTEXT_OTHER {
+  defaultCaption: "<id>";
+  color: #22FF54;
+  border-color: #d7a013;
+  text-color-internal: #2A2C34;
+  caption: "{day_index}";
+  diameter: 30px;
+}
+node.CONTEXT_HEALTH {
+  defaultCaption: "<id>";
+  color: #22FF54;
+  border-color: #d7a013;
+  text-color-internal: #2A2C34;
+  caption: "{day_index}";
+  diameter: 30px;
+}
+node.CONTEXT_UNI {
+  defaultCaption: "<id>";
+  color: #22FF54;
+  border-color: #d7a013;
+  text-color-internal: #2A2C34;
+  caption: "{day_index}";
+  diameter: 30px;
+}
+node.PERSON {
+  defaultCaption: "<id>";
+  caption: "{day_index}";
+  color: #D9C8AE;
+  border-color: #c0a378;
+  text-color-internal: #2A2C34;
+}
+node.FACILITY {
+  caption: "<id>";
+}
+relationship.LOCATION {
+  caption: "<id>";
+}
+relationship.PRESENT {
+  caption: "{relation}";
+}
