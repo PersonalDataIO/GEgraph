@@ -1,0 +1,2 @@
+# GEgraph
+Contact tracing graph
