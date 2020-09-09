@@ -11,8 +11,10 @@ La structure est celle données par redcap. J’ai du coder quelques variables p
 J’appelle contact étroit ou entourage les gens déclaré comme contact par une personne positive covid, j’appelle patient index la personne positive qui a déclaré quelqu’un comme entourage.
 
 Redcap_suivi
-===
+---
 
+|identifiant|description|
+|---|---|
 |record_id_pos	|Identifiant de la personne positive|
 |redcap_event_name	|Variable de structure redcap (format lonitudinal : nom de l’évènement)|
 |redcap_repeat_instrument	|Variable de structure redcap : nom du formulaire répétable|
@@ -22,17 +24,7 @@ Redcap_suivi
 |lat	|Latitude de l’adresse|
 |contact_record_id	|Identifiant de la personne contact|
 |contact_derniercont|	Date du dernier contact avec avec le patient index|
-|contact_type	|Type de lien avec le patient index :
-1	Vit sous le même toit
-2	Contact intime (ne vivant pas sous le même toit)
-3	Professionnel
-4	Milieu de la santé
-5	Relation sociale
-6	Loisirs
-8	Formation professionnelle/universitaire
-9	Milieu scolaire (crèche, primaire, secondaire I et II)
-7	Autre
-|
+|contact_type	|Type de lien avec le patient index : 1	Vit sous le même toit, 2	Contact intime (ne vivant pas sous le même toit), 3	Professionnel 4	Milieu de la santé 5	Relation sociale 6	Loisirs 8	Formation professionnelle/universitaire 9	Milieu scolaire (crèche, primaire, secondaire I et II) 7	Autre|
 
 
 La table contient plusieurs « formulaire », donc plusieures source d’information. Ce qui est désigné par la variable redcap_event_name par « labo_arm_1 » concerne les résultat du labo, et donne la variable date_res, la date du résultat. Dans l’évènement s1_arm_1 (redcap_event_name == « s1_arm_1 »), il y a un formulaire qui correspond à la variable redcap_repeat_instrument vide, qui contient les données sur la personne positive, dont son adresse avec lng et lat ; puis des formulaires répétables données par redcap_event_name == s1_arm_1, redcap_repeat_instrument == entourage, avec chaque formulaire donné par un entier dans la variable redcap_repeat_instance correspondant à un contact étroit de la personne positive. Exemple :
@@ -42,31 +34,32 @@ La table contient plusieurs « formulaire », donc plusieures source d’infor
 Le record 869 a un résultat le 28.04, habite 6.15 46.17, et vit avec deux personnes identifiées par contact_record_id 5 et 6, dont le dernier contact remonte au 28.04.2020
 
 Redcap_entourage
-===
+---
 
 Le projet entourage à une entrée par quarantaine/contact
-
+|identifiant|description|
+|---|---|
 |record_id_entourage	|Identifiant de la quarantaine|
 |record_id_pos	|Identifiant de cette personne dans le projet suivi si à eu un test positif|
 |contact_record_id	|Identifiant de la personne contact étroit (cf projet suivi)|
-|contact_decision	|"1	Quarantaine
-2	Auto-surveillance
-3	Aucune mesure
-"|
+|contact_decision	|1	Quarantaine 2	Auto-surveillance  3	Aucune mesure|
 |contact_q_datedeb	|Date de début de quarantaine|
 |contact_q_datefin	|Date de fin de quarantaine|
 
 
 Exemple : pour le contact 5 du record_id_pos 869 (exemple du dessus) :
+
 |record_id_entourage|	record_id_pos|	contact_record_id|	contact_decision|	contact_q_datedeb|	contact_q_datefin|
+|---|---|---|---|---|---|
 |1351	|<NA>	|5	|1	|06.05.2020	|16.05.2020|
 
 
 Cette personne est mise en quarantaine du 06.05 au 16.05, n’est pas devenue positive/n’a pas été positive (sinon record_id_pos serait renseigné, et donnerai l’entrée de cette personne dans redcap_suivi)
 
 Redcap_covitravel
-===
-
+---
+|identifiant|description|
+|---|---|
 |record_id_travel|	Identifiant de la personne retournant de voyage|
 |record_id_pos|	Identifiant dans le projet suivi si cette personne à été testée positive|
 |pays_visite|	Identifiant su pays|
@@ -75,8 +68,9 @@ Redcap_covitravel
 
 
 Redcap_coga
-===
-
+---
+|identifiant|description|
+|---|---|
 |record_id_coga|	Identifiant coga|
 |record_id_pos|	Identifiant dans le projet suivi si cette personne à été testée positive|
 |destinataire|	Lieu de fréquentation (destinataire de la requête coga)|
