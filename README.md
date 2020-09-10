@@ -34,6 +34,8 @@ The numbers in the circles represent:
 - for infected individuals, the date of their positive result (index since January 1st 2020 of the day)
 - for context, the day of the last encounter of that kind between the two individuals
 
+![Zoom of Neo4J result](https://github.com/PersonalDataIO/GEgraph/raw/master/screenshot2.png "Zoom of Neo4J result")
+
 ## How to exploit this data
 We include scripts to import this data into Neo4J.
 
