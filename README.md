@@ -30,6 +30,10 @@ Given that model, the graph presented here is a subset, consisting of the union 
 Persons are represented in the graph with light brown circles. The smaller ones are infected, the bigger ones are not known to be. 
 The circles between those correspond to context, colored according to which kind of common context they are: residence, social, work, etc. In darker blue, you have the co-residence context. Due to the data collection protocol, this one can appear multiple times between any two individuals, and in any case leads to obvious clusters. For the other contexts, the coloring is mostly pink/purple for social events/leisure, and dark green for work. 
 
+The numbers in the circles represent:
+- for infected individuals, the date of their positive result (index since January 1st 2020 of the day)
+- for context, the day of the last encounter of that kind between the two individuals
+
 ## How to exploit this data
 We include scripts to import this data into Neo4J.
 
