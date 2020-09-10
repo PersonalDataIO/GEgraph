@@ -9,4 +9,6 @@ This is a preliminary release. We do not think our scripts are very robust, and 
 
 We hope this data might be useful in assessing the contact tracing strategies, their proportionality with respect to results, and in developing an interoperable framework across borders for opertations but also assessment of efficacy. 
 
+With thanks to those who devoted time to this project within the [Cantonal Health Authority of Geneva canton](https://www.ge.ch/organisation/service-du-medecin-cantonal). 
+
 ![Screenshot of Neo4J result](https://github.com/PersonalDataIO/GEgraph/raw/master/screenshot.png "Screenshot of Neo4J result")
