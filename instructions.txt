@@ -4,7 +4,7 @@
 4/ Au dessus du décompte de noeuds, labels, relationships et types (tous 0 pour l'instant), cliquer sur les 3 points en haut a droite --> Manage --> Settings --> commenter la ligne "dbms.directories.import=import" avec # --> restart
 4/ Start --> Open (cela lance le produit "Neo4J Browser")
 5/ Settings (icone "gears") --> check "Enable multistatement query editor"
-6/ sauver les fichiers csv sur disque, et modifier dans "import.cql" le chemin des fichiers pour qu'il corresponde a ce qu'il y a sur disque
+6/ sauver les fichiers csv sur disque (*), et modifier dans "import.cql" le chemin des fichiers pour qu'il corresponde a ce qu'il y a sur disque
 7/ faire drag-and-drop, dans l'ordre:
 7.a/ index.cql (cliquer "paste in editor" puis play après)
 7.b/ import.cql (cliquer "paste in editor" puis play après)
@@ -12,3 +12,4 @@
 7.d/ query_200.cql (cliquer "paste in editor" puis play après)
 
 
+(*) on Windows: "file:///" + "C:\\Users\\machin\\bidule\\" + "data/redcap..."
