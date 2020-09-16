@@ -131,11 +131,11 @@ node.PERSON {
   text-color-internal: #2A2C34;
 }
 node.FACILITY {
-  caption: "<id>";
+  caption: "{population}";
 }
 relationship.LOCATION {
   caption: "<id>";
 }
 relationship.PRESENT {
-  caption: "{relation}";
+  caption: "{delay}";
 }
