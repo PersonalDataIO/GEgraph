@@ -62,7 +62,7 @@ node.CONTEXT_RESIDENCE {
 node.CONTEXT_SOCIAL {
   defaultCaption: "<id>";
   color: #FFC4FF;
-  border-color: #447666;
+  border-color: #FFC4FF;
   text-color-internal: #000000;
   caption: "{day_index}";
   diameter: 30px;
@@ -123,6 +123,28 @@ node.CONTEXT_UNI {
   caption: "{day_index}";
   diameter: 30px;
 }
+
+node.CONTEXT_COGA {
+  defaultCaption: "<id>";
+  color: #FFC4FF;
+  border-color: #000000;
+  border-width:10px;
+  text-color-internal: #2A2C34;
+  caption: "{total_population} on {day_index}";
+  diameter: 80px;
+}
+
+node.CONTEXT_REGION {
+  defaultCaption: "<id>";
+  color: #AAAAAA;
+  border-color: #000000;
+  border-width:10px;
+  text-color-internal: #000000;
+  caption: "{total_population}";
+  diameter: 80px;
+}
+
+
 node.PERSON {
   defaultCaption: "<id>";
   caption: "{day_index}";

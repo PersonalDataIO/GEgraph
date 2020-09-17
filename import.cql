@@ -42,7 +42,7 @@ MERGE (p:PERSON{record_id_travel:row.record_id_travel});
 
 // precreates infected/coga
 MATCH (row:REDCAP_COGA)
-WITH row WHERE NOT row.record_id_pos IS NULL
+WHERE EXISTS(row.record_id_pos)
 MATCH (p:PERSON{record_id_pos:row.record_id_pos})
 SET p.record_id_coga = row.record_id_coga;
 
@@ -65,21 +65,31 @@ MERGE (p:PERSON{record_id_contact:row.contact_record_id});
 // TRAVEL
 MATCH (row:REDCAP_COVITRAVEL)
 MERGE (person:PERSON{record_id_travel:row.record_id_travel})
-MERGE (r:REGION{type:"pays", id:row.pays_visite})
-CREATE (context:CONTEXT{type:"trip"})
-CREATE (context)-[:LOCATION]->(r)
-CREATE (person)<-[:PRESENT]-(context)
-CREATE (q:QUARANTINE{debut:CASE row.contact_q_datedeb WHEN NULL THEN NULL ELSE date(row.contact_q_datedeb) END, fin:CASE row.contact_q_datefin WHEN NULL THEN NULL ELSE date(row.contact_q_datefin) END})
-CREATE (q)-[:CAUSE]->(context)
-CREATE (q)-[:INDIVIDUAL]->(person);
+MERGE (context:CONTEXT{type:"country", id:row.pays_visite})
+MERGE (person)<-[:PRESENT]-(context)
+CREATE (q:QUARANTINE{
+debut:CASE row.contact_q_datedeb WHEN NULL THEN NULL ELSE date(row.contact_q_datedeb) END, 
+fin:CASE row.contact_q_datefin WHEN NULL THEN NULL ELSE date(row.contact_q_datefin) END,
+day_index:duration.inDays(date("2020-01-01"), date(row.contact_q_datedeb)).days
+})
+MERGE (context) <-[:CAUSE]- (q) -[:INDIVIDUAL]->(person);
 
 //  COGA
 MATCH (row:REDCAP_COGA)
 MERGE (person:PERSON{record_id_coga:row.record_id_coga})
-MERGE (facility:FACILITY{type:"coga", destinataire:row.destinataire, salle:CASE row.salle WHEN NULL THEN "" ELSE row.salle END})
-CREATE (context:CONTEXT{type:"event"})
-CREATE (person)<-[:PRESENT{debut:datetime(replace(row.date," ","T")), source:"coga"}]-(context)
-CREATE (context)-[:LOCATION]->(facility);
+MERGE (context:CONTEXT{
+type:"coga", 
+destinataire:row.destinataire, 
+salle:CASE row.salle WHEN NULL THEN "" ELSE row.salle END
+})
+MERGE (person)<-[:PRESENT{
+debut:datetime(replace(row.date," ","T")), 
+source:"coga"
+}]-(context)
+;
+
+MATCH (c:CONTEXT{type:"coga"})-[r:PRESENT]->(p:PERSON)
+SET c.day_index = duration.inDays(date("2020-01-01"), r.debut).days;
 
 // SUIVI
 // suivi -> test
@@ -125,24 +135,34 @@ contact_derniercont:date(row.contact_derniercont),
 day_index:CASE row.contact_derniercont WHEN NULL THEN NULL ELSE duration.inDays(date("2020-01-01"), date(row.contact_derniercont)).days END};
 
 // ENTOURAGE
-// WARNING: this needs to be adapted to refer to the suivi -> contact CONTEXT as a cause
+// WARNING: this needs to be adapted to refer to the suivi -> contact CONTEXT as a cause;missing a CAUSE pointing at the entourage investigation, because this information is not in the export
 MATCH (row:REDCAP_ENTOURAGE)
 WITH row WHERE NOT row.contact_record_id IS NULL
 MERGE (p:PERSON{record_id_contact:row.contact_record_id})
 MERGE (q:QUARANTINE{record_id_entourage:row.record_id_entourage})
-SET q={debut:CASE row.contact_q_datedeb WHEN NULL THEN NULL ELSE date(row.contact_q_datedeb) END, fin:CASE row.contact_q_datefin WHEN NULL THEN NULL ELSE date(row.contact_q_datefin) END, contact_decision:CASE row.contact_decision WHEN NULL THEN NULL ELSE row.contact_decision END}
-// WARNING: missing a CAUSE pointing at the entourage investigation, because this information is not in the export
-MERGE (q)-[:INDIVIDUAL]->(p);
+MERGE (q)-[:INDIVIDUAL]->(p)
+SET q={
+debut:CASE row.contact_q_datedeb WHEN NULL THEN NULL ELSE date(row.contact_q_datedeb) END, 
+fin:CASE row.contact_q_datefin WHEN NULL THEN NULL ELSE date(row.contact_q_datefin) END, 
+contact_decision:CASE row.contact_decision WHEN NULL THEN NULL ELSE row.contact_decision END,
+day_index:CASE row.contact_q_datedeb WHEN NULL THEN NULL ELSE duration.inDays(date("2020-01-01"), date(row.contact_q_datedeb)).days END
+}
+;
 
 // this needs to be adapted to refer to the suivi -> contact CONTEXT as a cause
+// WARNING: missing a CAUSE pointing at the entourage investigation, because this information is not in the export
 MATCH (row:REDCAP_ENTOURAGE)
 WITH row WHERE row.contact_record_id IS NULL 
 // WARNING: This should not happen in an ideal world, because a new contact lead would create an entry in the other table
 CREATE (p:PERSON)
 MERGE (q:QUARANTINE{record_id_entourage:row.record_id_entourage})
-SET q={debut:CASE row.contact_q_datedeb WHEN NULL THEN NULL ELSE date(row.contact_q_datedeb) END, fin:CASE row.contact_q_datefin WHEN NULL THEN NULL ELSE date(row.contact_q_datefin) END, contact_decision:CASE row.contact_decision WHEN NULL THEN NULL ELSE row.contact_decision END}
-// WARNING: missing a CAUSE pointing at the entourage investigation, because this information is not in the export
-MERGE (q)-[:INDIVIDUAL]->(p);
+MERGE (q)-[:INDIVIDUAL]->(p)
+SET q={
+debut:CASE row.contact_q_datedeb WHEN NULL THEN NULL ELSE date(row.contact_q_datedeb) END, 
+fin:CASE row.contact_q_datefin WHEN NULL THEN NULL ELSE date(row.contact_q_datefin) END, 
+contact_decision:CASE row.contact_decision WHEN NULL THEN NULL ELSE row.contact_decision END,
+day_index:CASE row.contact_q_datedeb WHEN NULL THEN NULL ELSE duration.inDays(date("2020-01-01"), date(row.contact_q_datedeb)).days END
+};
 
 MATCH (c:CONTEXT)
 WHERE c.classification = "1"
@@ -184,41 +204,41 @@ MATCH (c:CONTEXT)
 WHERE c.classification = "9"
 SET c:CONTEXT_SCHOOL;
 
+MATCH (c:CONTEXT)
+WHERE c.type = "country"
+SET c:CONTEXT_REGION;
+
+MATCH (c:CONTEXT)
+WHERE c.type = "coga"
+SET c:CONTEXT_COGA;
+
+
 // MARK INFECTED
 MATCH (p:PERSON)
-WITH p WHERE NOT p.record_id_pos IS NULL
+WHERE EXISTS(p.record_id_pos)
 SET p:INFECTED;
-
-MATCH (f:FACILITY)<-[:LOCATION]-(c:CONTEXT{type:"event"})-[:PRESENT]->(p:PERSON)
-WITH f, COUNT (p) AS population
-SET f={population:population}; 
-// should this also be set on the event?
 
 MATCH (i1:INFECTED)<-[r:PRESENT]-(c:CONTEXT)
 WHERE NOT c.day_index IS NULL
 SET r.delay = i1.day_index - c.day_index;
 
+// Delete redundant edges on contact pairs
 MATCH (c1:CONTEXT{type:"residence"})--(p1:PERSON)--(c2:CONTEXT{classification:"1"})--(p2:PERSON)
-MERGE (c1)-[:PRESENT{status:"lives"}]->(p2);
+WHERE NOT EXISTS((c1)-[:PRESENT{status:"lives"}]->(p2))
+MERGE (c1)-[:PRESENT{status:"lives", inferred:"true"}]->(p2);
 
-MATCH (c1:CONTEXT{type:"residence"})--(p1:PERSON)--(c2:CONTEXT{classification:"1"})--(p2:PERSON)
-MERGE (c1)-[:PRESENT{status:"lives"}]->(p2);
+MATCH (c1:CONTEXT_RESIDENCE)--(p1:PERSON)-[r1]-(c2:CONTEXT{classification:"1"})-[r2]-(p2:PERSON)--(c1)
+DETACH DELETE c2;
 
-MATCH (c1:CONTEXT{type:"residence"})--(p1:PERSON)--(c2:CONTEXT{classification:"1"})--(p2:PERSON)
-MERGE (c1)-[:PRESENT{status:"lives"}]->(p2);
 
-MATCH (c1:CONTEXT{type:"residence"})--(p1:PERSON)--(c2:CONTEXT{classification:"1"})--(p2:PERSON)
-MERGE (c1)-[:PRESENT{status:"lives"}]->(p2);
+//count population
+MATCH (c:CONTEXT)--(i:INFECTED)
+WITH c, COUNT(i) AS population
+SET c.infected_population = population;
 
-MATCH (p:PERSON)--(c)--(i:INFECTED)
-WITH p, COUNT(i) AS population
-SET p.population = population;
+MATCH (c:CONTEXT)--(i:PERSON)
+WITH c, COUNT(i) AS population
+SET c.total_population = population;
 
-MATCH (p:PERSON)--(c{type:"residence"})--(i:INFECTED)
-WITH p, COUNT(i) AS population
-SET p.population_residence = population;
-
-MATCH (p:PERSON)--(c)--(i:INFECTED)
-WHERE NOT c:CONTEXT_RESIDENCE
-WITH p, COUNT(i) AS population
-SET p.population_not_residence = population;
+MATCH (c:CONTEXT)
+SET c.prevalence = toFloat(c.infected_population)/toFloat(c.total_population);
